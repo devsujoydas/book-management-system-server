@@ -37,7 +37,6 @@ async function run() {
 
     app.get("/books", async (req, res) => {
       const { page, limit, genre, minPrice, maxPrice, minYear, maxYear, author, sortBy, order, search } = req.query
-
       try {
         const currentPage = Math.max(1, parseInt(page) || 1);
         const perPage = parseInt(limit) || 10;
