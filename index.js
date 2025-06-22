@@ -9,7 +9,7 @@ app.use(cors())
 app.use(express.json())
 
 //mongodb connections
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = process.env.MONGODB_URI;
 
 const client = new MongoClient(uri, {
@@ -50,7 +50,6 @@ async function run() {
           ]
         }
 
-
         if (genre) filter.genre = genre;
 
         if (author) filter.author = author;
@@ -82,13 +81,36 @@ async function run() {
 
 
 
+        res.status(201).json({ books, totalBooks, currentPage, totalPage: Math.ceil(totalBooks / perPage) });
 
-        res.status(201).json(books);
       } catch (err) {
         res.status(500).json({ error: err.message });
       }
     });
 
+    app.get("/books/:id", async (req, res) => {
+      const bookId = req.params.id
+      try {
+        const book = await booksCollection.findOne({ _id: new ObjectId(bookId) })
+        if (!book) return res.status(404).json({ message: "Book not found!" })
+        res.status(201).json({ book })
+
+      } catch (error) {
+        res.status(500).json({ error: error.message })
+      }
+    })
+
+    app.put("/books/:id", async (req, res) => {
+      const bookId = req.params.id
+      try {
+        const UpdateBook = await booksCollection.updateOne({ _id: new ObjectId(bookId) }, { $set: req.body })
+         
+        res.status(201).json({ UpdateBook })
+
+      } catch (error) {
+        res.status(500).json({ error: error.message })
+      }
+    })
 
 
 
