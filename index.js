@@ -104,7 +104,7 @@ async function run() {
       const bookId = req.params.id
       try {
         const UpdateBook = await booksCollection.updateOne({ _id: new ObjectId(bookId) }, { $set: req.body })
-         
+
         res.status(201).json({ UpdateBook })
 
       } catch (error) {
@@ -112,6 +112,17 @@ async function run() {
       }
     })
 
+    app.put("/books/:id", async (req, res) => {
+      const bookId = req.params.id
+      try {
+        const deleteBook = await booksCollection.deleteOne({ _id: new ObjectId(bookId) })
+
+        res.status(201).json({ message: "Book Deleted" })
+
+      } catch (error) {
+        res.status(500).json({ error: error.message })
+      }
+    })
 
 
 
